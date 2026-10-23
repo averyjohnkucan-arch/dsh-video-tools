@@ -17,13 +17,14 @@
   "files": [
     "index.js",
     "client.js",
-    "lib",
     "locale",
     "icon.svg",
     "cordis.patch.yml",
     "README.md",
     "LICENSE",
-    "patches"
+    "patches",
+    "lib/*.js",
+    "lib/*.py"
   ],
   "scripts": {
     "test": "node --test test/*.test.js",
