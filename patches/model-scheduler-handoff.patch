@@ -1,0 +1,15 @@
+--- a/lib/scheduler.js
++++ b/lib/scheduler.js
+@@ -78,9 +78,10 @@
+       // for keeping a model warm when there is no competing request.
+       // Background ingestion must not evict a chat between steps or immediately
+       // after its answer. Each foreground lease renews this separate quiet period.
+-      const backgroundWait=q?.driver.priority==='background'&&c.driver.priority!=='background';
++      const ownToolHandoff=q?.driver.immediate===true&&q.driver.handoffSessionId&&c.sessions?.has(q.driver.handoffSessionId)&&![...c.sessions].some(id=>id!==q.driver.handoffSessionId&&this.turns.has(id));
++      const backgroundWait=q?.driver.priority==='background'&&c.driver.priority!=='background'&&!ownToolHandoff;
+       if(backgroundWait&&!c.stopRequested&&(turnPending||busy)){this.arm(d,500);return;}
+-      const deadline=q?(backgroundWait?c.idleSince+this.backgroundMs:turnPending||busy?q.queuedAt+this.switchMs:0):c.idleUntil;
++      const deadline=q?(backgroundWait?c.idleSince+this.backgroundMs:ownToolHandoff&&!busy?0:turnPending||busy?q.queuedAt+this.switchMs:0):c.idleUntil;
+       if(!c.stopRequested&&Date.now()<deadline){this.arm(d,busy?Math.min(100,deadline-Date.now()):deadline-Date.now());return;}
+       if(busy&&!q&&!c.stopRequested){this.arm(d,500);return;}
+       c.phase='unloading';this.onChange();

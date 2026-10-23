@@ -1,0 +1,26 @@
+import {ModelScheduler} from '/home/user/dsh-model-scheduler/lib/scheduler.js';
+import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,rm,writeFile,readFile,chmod} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join,dirname} from 'node:path';import {execFileSync} from 'node:child_process';import {Context} from '@deepseek-ai/cordis';import * as plugin from '../index.js';import {Settings,defaults} from '../lib/config.js';
+const ffmpeg='/home/user/Desktop/AI/runtime/media/bin/ffmpeg',ffprobe='/home/user/Desktop/AI/runtime/media/bin/ffprobe';
+test('normal tool call publishes a durable video file; explicit HQ uses its separate model; dispose removes hooks',async t=>{
+ const root=await mkdtemp(join(tmpdir(),'video-contract-'));t.after(()=>rm(root,{recursive:true,force:true}));const fixture=join(root,'fixture.webm');
+ execFileSync(ffmpeg,['-hide_banner','-loglevel','error','-f','lavfi','-i','color=c=blue:s=256x256:r=24','-f','lavfi','-i','sine=frequency=440:sample_rate=24000','-frames:v','9','-t','0.375','-c:v','libvpx-vp9','-threads','1','-c:a','libopus',fixture]);
+ const binary=join(root,'fixture-renderer');await writeFile(binary,`#!${process.execPath}\nimport fs from 'node:fs';import path from 'node:path';const args=process.argv.slice(2);if(args.includes('--list-devices')){console.log('CPU\\tFixture CPU');}else{const output=args[args.indexOf('-o')+1];fs.copyFileSync(${JSON.stringify(fixture)},output);fs.writeFileSync(path.join(path.dirname(output),'observed-args.json'),JSON.stringify(args));}\n`);await chmod(binary,0o700);
+ const cfg=defaults();Object.assign(cfg,{backend:'sdcpp',sdExecutable:binary,ffprobeExecutable:ffprobe,execution:'cpu',width:256,height:256,frames:9});for(const [key,p] of Object.entries(cfg.models)){for(const field of ['modelPath','textEncoderPath','videoVaePath','audioVaePath']){p[field]=join(root,key+'-'+field);await writeFile(p[field],'fixture component, no model inference');}}
+ const settings=new Settings(join(root,'settings'));await settings.init();await settings.save(cfg);
+ const ctx=new Context(),tools=[],routes=[],saved=[];ctx.provide('tools',{register:d=>{tools.push(d);return()=>tools.splice(tools.indexOf(d),1);}});ctx.provide('sandboxPolicy',{});const scheduler=new ModelScheduler();ctx.provide('modelScheduler',scheduler);t.after(()=>scheduler.close());ctx.provide('webServer',{register:r=>{routes.push(r);return()=>routes.splice(routes.indexOf(r),1);},getOrigin:()=> 'http://127.0.0.1:3080'});ctx.provide('attachments',{async saveFileStream({data,signal,name}){let size=0;for await(const chunk of data){signal.throwIfAborted();size+=chunk.length;}saved.push(size);return {attachmentId:'fixture-'+saved.length,bytes:size,name};}});
+ const fiber=ctx.plugin(plugin,{dataDir:settings.root});await fiber;const tool=tools[0];
+ const menu=JSON.parse((await tool.execute({action:'menu'},{})).data);assert.doesNotMatch(menu.capabilities.textToVideo,/pending/);assert.match(menu.capabilities.devices,/tested/);
+ for(const tags of [[],['HQ']]){const result=await tool.execute({action:'generate',prompt:'A blue scene',tags},{agent:{session:{header:{cwd:root}}},workspace:root,signal:new AbortController().signal});const info=JSON.parse(result.data);assert.equal(info.quality,tags.length?'HQ':'standard');assert.equal(info.width,256);assert.equal(info.frames,9);assert.ok(result.file.bytes>100);assert.deepEqual(tool.output.render({},result).at(-1),{type:'file',attachment:result.file});const args=JSON.parse(await readFile(join(dirname(join(root,info.path)),'observed-args.json'),'utf8'));assert.equal(args[args.indexOf('--diffusion-model')+1],cfg.models[info.quality].modelPath);assert.equal(args[args.indexOf('--steps')+1],tags.length?'40':'8');}
+ assert.equal(saved.length,2);
+ // A real owned worker is stopped before the persistent disable action resolves.
+ await writeFile(binary,`#!${process.execPath}\nif(process.argv.includes('--list-devices'))console.log('CPU\\tFixture CPU');else setInterval(()=>{},1000);\n`);
+ const pending=tool.execute({action:'generate',prompt:'cancel this worker'},{agent:{session:{header:{cwd:root}}},workspace:root});
+ const rejected=assert.rejects(pending);
+ const service=ctx.get('videoGeneration');
+ for(let i=0;i<100&&!([...service.jobs.values()].at(-1)?.child);i++)await new Promise(r=>setTimeout(r,10));
+ const pid=[...service.jobs.values()].at(-1)?.child?.pid;assert.ok(pid);
+ await service.configure({...service.settings.value,enabled:false});await rejected;
+ assert.equal(tools.length,0);assert.throws(()=>process.kill(pid,0),{code:'ESRCH'});
+ await service.configure({...service.settings.value,enabled:true});assert.equal(tools.length,1);
+ await fiber.dispose();assert.equal(tools.length,0);assert.equal(routes.length,0);await ctx.fiber.dispose();
+});
