@@ -7,3 +7,18 @@ test('real Cordis tool and owner routes load, reload and dispose using host hook
  for(let iteration=0;iteration<2;iteration++){const fiber=ctx.plugin(plugin,{dataDir:dir});await fiber;assert.deepEqual(tools.map(v=>v.name),['video_tools']);assert.match(tools[0].description,/NEVER choose HQ automatically/);const menu=await tools[0].execute({action:'menu'},{});assert.match(menu.data,/standard/);const route=routes.find(v=>v.path.endsWith('/action'));let code=200,body;const req=Readable.from([JSON.stringify({action:'configure',payload:{settings:configured()}})]);req.method='POST';req.headers={'content-type':'application/json'};await route.handler(req,{setHeader(){},writeHead:v=>code=v,end:v=>body=v});assert.equal(code,401);assert.match(body,/Owner capability/);const service=ctx.get('videoGeneration');await service.configure({...service.settings.value,enabled:false});assert.equal(tools.length,0);await service.configure({...service.settings.value,enabled:true});assert.equal(tools.length,1);await fiber.dispose();assert.equal(tools.length,0);assert.equal(routes.length,0);}
  await ctx.fiber.dispose();});
 test('cancellation terminates only the worker owned by this plugin',async()=>{const controller=new AbortController();let pid;const started=Date.now(),promise=run(process.execPath,['-e','setInterval(()=>{},1000)'],{signal:controller.signal,onSpawn:child=>{pid=child.pid;setTimeout(()=>controller.abort(),100);}});await assert.rejects(promise);assert.ok(Date.now()-started<7000);assert.throws(()=>process.kill(pid,0),e=>e.code==='ESRCH');});
+test('prepare injects guide before composition; submit removes it before rendering, including failure',async t=>{
+ const dir=await mkdtemp(join(tmpdir(),'video-preparation-'));t.after(()=>rm(dir,{recursive:true,force:true}));const ctx=new Context(),tools=[];
+ ctx.provide('tools',{register:d=>{tools.push(d);return()=>tools.splice(tools.indexOf(d),1);}});ctx.provide('attachments',{});ctx.provide('sandboxPolicy',{});ctx.provide('webServer',{register:()=>()=>{},getOrigin:()=> 'http://127.0.0.1:3080'});
+ const fiber=await ctx.plugin(plugin,{dataDir:dir});t.after(async()=>{await fiber.dispose();await ctx.fiber.dispose();});
+ const tool=tools[0],agent={session:{}},exec={agent};const step=()=>ctx.waterfall('agent/pre-step',{agent},async()=>({kind:'enter',messages:[]}));let renders=0;
+ ctx.videoGeneration.render=async args=>{renders++;assert.deepEqual((await step()).messages,[],'guide disappears before engine execution');assert.equal(args.prompt,'A golden chicken walks on grass.');return {path:'/clip.mp4'};};
+ await tool.execute({action:'prepare'},exec);
+ const initial=JSON.parse((await tool.execute({action:'generate',prompt:'chicken'},exec)).data);assert.equal(initial.submitted,false);assert.equal(renders,0);assert.match(JSON.stringify((await step()).messages),/camera motion/);
+ await assert.rejects(()=>tool.execute({action:'generate',prompt:'LTX-2.5 prompt preparation (temporary guidance, not video content)'},exec),/without the temporary/);assert.equal(renders,0);
+ await tool.execute({action:'generate',prompt:'A golden chicken walks on grass.'},exec);assert.equal(renders,1);assert.equal((await step()).messages.length,0);
+ await tool.execute({action:'prepare'},exec);assert.equal((await step()).messages.length,1);
+ ctx.videoGeneration.render=async()=>{assert.equal((await step()).messages.length,0);throw Error('fixture render failure');};
+ await assert.rejects(()=>tool.execute({action:'generate',prompt:'scene'},exec),/fixture render failure/);assert.equal((await step()).messages.length,0);
+ await tool.execute({action:'prepare'},exec);await tool.execute({action:'cancel'},exec);assert.equal((await step()).messages.length,0);
+});

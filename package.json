@@ -1,6 +1,6 @@
 {
   "name": "dsh-video-tools",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Cordis Video Generation tools with default LTX distilled and explicit HQ model selection.",
   "type": "module",
   "license": "MIT",
@@ -46,7 +46,9 @@
       "inject": [
         "@deepseek-ai/dsh-client-ui-settings",
         "@deepseek-ai/dsh-client-ui-tool",
-        "@deepseek-ai/dsh-client-ui-primitives"
+        "@deepseek-ai/dsh-client-ui-primitives",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-chat"
       ]
     }
   },
