@@ -19,6 +19,8 @@ import comfy.sd, comfy.utils, comfy.sample, comfy.samplers, comfy.model_manageme
 import nodes
 from comfy_extras.nodes_minimax_h3 import MiniMaxH3ImageToVideo
 from comfy_extras.nodes_audio import VAEDecodeAudio
+from PIL import Image
+import numpy as np
 logging.basicConfig(level=logging.INFO)
 def stage(name, **values):
     print(json.dumps(dict(stage=name, **values)), flush=True)
@@ -33,7 +35,9 @@ with torch.inference_mode():
             raise ValueError('H3 currently requires Comfy-compatible Safetensors for ' + field)
     clip = comfy.sd.load_clip(ckpt_paths=[p['textEncoderPath']], embedding_directory=[], clip_type=comfy.sd.CLIPType.MINIMAX)
     vae = load_vae(p['videoVaePath'])
-    positive, latent = MiniMaxH3ImageToVideo.execute(clip, vae, r['prompt'], r['generationWidth'], r['generationHeight'], r['frames'])
+    def image(path):
+        return torch.from_numpy(np.array(Image.open(path).convert('RGB'))).float().unsqueeze(0) / 255.0 if path else None
+    positive, latent = MiniMaxH3ImageToVideo.execute(clip, vae, r['prompt'], r['generationWidth'], r['generationHeight'], r['frames'], first_frame=image(r.get('firstFramePath')), last_frame=image(r.get('lastFramePath')))
     del clip
     comfy.model_management.unload_all_models()
     model = comfy.sd.load_diffusion_model(p['modelPath'], model_options={})

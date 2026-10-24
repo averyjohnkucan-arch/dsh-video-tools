@@ -21,10 +21,10 @@ test('native row updates the right-hand percentage and ETA for the exact call, a
  const f=await renderer({fetch:async(url,options)=>{requests.push({url,options});return {ok:true,status:200,json:async()=>({result:value})};},setTimeout:fn=>{pending.push(fn);return 23;},clearTimeout:id=>cleared=id});
  const props={phase:'start',callId:'clip-call',block:{argsRaw:'PRIVATE PROMPT'},useDisclosure:()=>({expanded:false,toggle(){}})};
  f.view(props);const cleanup=f.effects[0]();await new Promise(r=>setImmediate(r));
- let row=find(f.view(props),f.DisclosureRow)[0];assert.equal(row.props.title,'Calling tools');assert.equal(row.props.collapsedContent.children[0],'~15% · Processing · ETA ~3 min');assert.equal(row.props.collapsedContent.props.style.marginLeft,'auto');assert.equal(row.props.collapsedContent.props.style.font,'inherit');assert.doesNotMatch(JSON.stringify(row),/PRIVATE PROMPT/);
+ let tree=f.view(props);assert.equal(find(tree,'progress')[0].props.value,15);assert.equal(find(tree,'progress')[0].props.max,100);let row=find(tree,f.DisclosureRow)[0];assert.equal(row.props.title,'Calling tools');assert.equal(row.props.collapsedContent.children[0],'~15% · Processing · ETA ~3 min');assert.equal(row.props.collapsedContent.props.style.marginLeft,'auto');assert.equal(row.props.collapsedContent.props.style.font,'inherit');assert.doesNotMatch(JSON.stringify(row),/PRIVATE PROMPT/);
  assert.equal(JSON.parse(requests[0].options.body).payload.callId,'clip-call');
- value={...value,percent:26,etaSeconds:55};await pending.shift()();row=find(f.view(props),f.DisclosureRow)[0];assert.equal(row.props.collapsedContent.children[0],'~26% · Processing · ETA <1 min');
+ value={...value,percent:26,etaSeconds:55};await pending.shift()();assert.equal(find(f.view(props),'progress')[0].props.value,26);row=find(f.view(props),f.DisclosureRow)[0];assert.equal(row.props.collapsedContent.children[0],'~26% · Processing · ETA <1 min');
  value={status:'running',stage:'restoring',percent:98,etaSeconds:null};await pending.shift()();assert.match(find(f.view(props),f.DisclosureRow)[0].props.collapsedContent.children[0],/Restoring model.*ETA estimating/);
  cleanup();assert.equal(cleared,23);assert.equal(requests[0].options.signal.aborted,true);
- assert.deepEqual([...f.views.keys()],['generate_video_clip','generate_video','video_tools']);
+ assert.deepEqual([...f.views.keys()],['generate_video_clip','generate_video','render_video_solar','video_tools']);
 });

@@ -1,6 +1,6 @@
 {
   "name": "dsh-video-tools",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Cordis video clips with LTX and a separate MiniMax H3 video pipeline, native playback and estimated progress.",
   "type": "module",
   "license": "MIT",
@@ -24,7 +24,8 @@
     "LICENSE",
     "patches",
     "lib/*.js",
-    "lib/*.py"
+    "lib/*.py",
+    "scripts/*.py"
   ],
   "scripts": {
     "test": "node --test test/*.test.js",

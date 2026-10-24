@@ -22,6 +22,6 @@ test('normal tool call publishes a durable video file; explicit HQ uses its sepa
  const pid=[...service.jobs.values()].at(-1)?.child?.pid;assert.ok(pid);
  await service.configure({...service.settings.value,enabled:false});await rejected;
  assert.equal(tools.length,0);assert.throws(()=>process.kill(pid,0),{code:'ESRCH'});
- await service.configure({...service.settings.value,enabled:true});assert.equal(tools.length,2);
+ await service.configure({...service.settings.value,enabled:true});assert.equal(tools.length,3);
  await fiber.dispose();assert.equal(tools.length,0);assert.equal(routes.length,0);await ctx.fiber.dispose();
 });
