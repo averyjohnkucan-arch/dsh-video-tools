@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ModelScheduler} from '/home/user/dsh-model-scheduler/lib/scheduler.js';
+import {ModelScheduler} from './scheduler-provider.js';
 test('shared scheduler completes active work before video and restores the previous driver',async()=>{
  const events=[],scheduler=new ModelScheduler({backgroundMs:0});
  const model={key:'chat',name:'chat',gpu:0,fingerprint:'chat',load:async()=>events.push('chat-load'),unload:async()=>events.push('chat-unload')};

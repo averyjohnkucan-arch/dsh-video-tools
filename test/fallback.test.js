@@ -1,7 +1,8 @@
+import {executable} from './executables.js';
 import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,writeFile,chmod,rm,mkdir} from 'node:fs/promises';import {join} from 'node:path';import {tmpdir} from 'node:os';import {execFileSync} from 'node:child_process';import {VideoRuntime} from '../lib/runtime.js';
 test('Comfy GPU OOM retries portable inference with a supported fresh WebM path',async t=>{
  const root=await mkdtemp(join(tmpdir(),'video-fallback-'));t.after(()=>rm(root,{recursive:true,force:true}));const fixture=join(root,'fixture.webm'),binary=join(root,'portable'),python=join(root,'python');
- const ffmpeg='/home/user/Desktop/AI/runtime/media/bin/ffmpeg',ffprobe='/home/user/Desktop/AI/runtime/media/bin/ffprobe';
+ const ffmpeg=executable('ffmpeg'),ffprobe=executable('ffprobe');
  execFileSync(ffmpeg,['-v','error','-f','lavfi','-i','testsrc2=s=256x256:r=24','-f','lavfi','-i','sine=frequency=440:sample_rate=24000','-frames:v','9','-t','0.375','-c:v','libvpx-vp9','-threads','1','-c:a','libopus',fixture]);
  await writeFile(python,`#!${process.execPath}\nconsole.error('out of memory');process.exit(1);\n`);await chmod(python,0o700);
  await writeFile(binary,`#!${process.execPath}\nconst fs=require('fs');const a=process.argv;if(a.includes('--list-devices'))console.log('Vulkan0\\tIntel Graphics');else{const out=a[a.indexOf('-o')+1];if(!out.endsWith('.webm'))throw Error('unsupported video suffix');fs.copyFileSync(${JSON.stringify(fixture)},out);}\n`);await chmod(binary,0o700);

@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,rm,writeFile,chmod} from 'node:fs/promises';import {join} from 'node:path';import {tmpdir} from 'node:os';import {VideoRuntime} from '../lib/runtime.js';import {ModelScheduler} from '/home/user/dsh-model-scheduler/lib/scheduler.js';
+import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,rm,writeFile,chmod} from 'node:fs/promises';import {join} from 'node:path';import {tmpdir} from 'node:os';import {VideoRuntime} from '../lib/runtime.js';import {ModelScheduler} from './scheduler-provider.js';
 for(const schedulerKind of ['shared scheduler','independent lease signal'])test(`chat Stop kills running video and never publishes an output (${schedulerKind})`,async t=>{
  const root=await mkdtemp(join(tmpdir(),'video-chat-stop-'));t.after(()=>rm(root,{recursive:true,force:true}));const binary=join(root,'worker');
  await writeFile(binary,`#!${process.execPath}\nif(process.argv.includes('--list-devices'))console.log('CPU\\tFixture CPU');else setInterval(()=>{},1000);\n`);await chmod(binary,0o700);

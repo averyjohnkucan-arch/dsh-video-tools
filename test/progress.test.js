@@ -27,7 +27,7 @@ test('portable tqdm evidence works; retries reset stale progress; terminal calls
 test('H3 has independent settings, request geometry and no automatic enablement or LTX substitution',()=>{
  const cfg=defaults();assert.equal(cfg.h3.enabled,false);assert.throws(()=>h3Request({prompt:'scene'},cfg),/disabled/);
  cfg.h3.enabled=true;assert.equal(validate(cfg).h3.steps,20);
- const r=h3Request({prompt:'People dance together with music.',duration:5},cfg);assert.equal(r.pipeline,'h3');assert.equal(r.fps,24);assert.equal(r.frames%17,5);assert.equal(r.profile.modelPath,'');assert.equal(r.profile.name,'MiniMax H3');
+ const r=h3Request({prompt:'People dance together with music.',duration:5},cfg);assert.equal(r.pipeline,'h3');assert.equal(r.fps,24);assert.equal(r.frames%17,5);assert.equal(r.profile.modelPath,'');assert.equal(r.profile.name,'MiniMax H3 · FL2VA');
  for(const a of [{duration:30},{width:1920,height:1080},{seed:-1},{audio:'yes'}])assert.throws(()=>h3Request({prompt:'scene',...a},cfg));
  assert.match(h3Description,/complex movement/);assert.match(h3Description,/substantially slower/);assert.match(clipGuidance,/mostly static/);assert.match(promptGuide,/Do not introduce cuts/);assert.doesNotMatch(promptGuide,/favor two to four|Only use multiple shots/);
 });

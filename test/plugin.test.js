@@ -28,9 +28,11 @@ test('H3 tool uses a separate schema, preparation and worker route without runni
  ctx.provide('tools',{register:value=>{tools.push(value);return()=>tools.splice(tools.indexOf(value),1);}});ctx.provide('attachments',{});ctx.provide('sandboxPolicy',{});ctx.provide('webServer',{register:()=>()=>{},getOrigin:()=> 'http://127.0.0.1:3080'});
  const fiber=await ctx.plugin(plugin,{dataDir:dir});t.after(async()=>{await fiber.dispose();await ctx.fiber.dispose();});
  const full=tools.find(v=>v.name==='generate_video'),clip=tools.find(v=>v.name==='generate_video_clip');assert.ok(full);assert.ok(clip);assert.equal(full.parameters.properties.tags,undefined);assert.match(clip.description,/mostly static/);
- const menu=JSON.parse((await full.execute({action:'menu'},{})).data);assert.equal(menu.enabled,false);assert.match(menu.hardwareQualification,/pending/);
+ const menu=JSON.parse((await full.execute({action:'menu'},{})).data);assert.equal(menu.enabled,false);assert.match(menu.hardwareQualification,/QUALIFICATION/);
  const agent={session:{}},exec={agent,callId:'full-motion-call'};await clip.execute({action:'prepare'},exec);
  ctx.videoGeneration.render=async(args,seenExec)=>{assert.equal(args.pipeline,'h3');assert.equal(args.execution,'gpu');assert.equal(seenExec.callId,'full-motion-call');return {attachment:{attachmentId:'fixture',name:'clip.mp4',bytes:10},profile:'MiniMax H3'};};
+ await full.execute({action:'prepare'},exec);await ctx.waterfall('agent/pre-step',{agent},async()=>({kind:'enter',messages:[]}));
+ await assert.rejects(()=>full.execute({action:'generate',prompt:'MiniMax H3 temporary prompt preparation (not video content)'},exec),/without the temporary/);
  const result=await full.execute({action:'generate',prompt:'Two dancers exchange places with synchronized music.'},exec);assert.equal(result.file.name,'clip.mp4');assert.equal(full.output.render({},result).at(-1).type,'file');
  const decision=await ctx.waterfall('agent/pre-step',{agent},async()=>({kind:'enter',messages:[]}));assert.equal(decision.messages.length,0,'LTX preparation cannot leak into H3');
 });

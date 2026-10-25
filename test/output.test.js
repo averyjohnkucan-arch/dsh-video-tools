@@ -1,3 +1,4 @@
+import {executable} from './executables.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm} from 'node:fs/promises';
@@ -7,7 +8,7 @@ import {defaults} from '../lib/config.js';
 import {request,PRESETS} from '../lib/request.js';
 import {finishMedia,validateMedia,probe,validateDecodedMedia} from '../lib/media.js';
 import {run} from '../lib/process.js';
-const cfg=defaults();cfg.ffprobeExecutable='/home/user/Desktop/AI/runtime/media/bin/ffprobe';
+const cfg=defaults();cfg.ffmpegExecutable=executable('ffmpeg');cfg.ffprobeExecutable=executable('ffprobe');
 test('every preset, custom padding and square crop retain native generation dimensions',()=>{
  for(const [resolution,[w,h]] of Object.entries(PRESETS))for(const shape of ['landscape','square']){
   const r=request({prompt:'scene',resolution,shape},cfg);

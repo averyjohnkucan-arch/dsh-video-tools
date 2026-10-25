@@ -11,8 +11,8 @@ test('completed video calls reveal a playable download and details only when exp
 test('video player and download appear at the turn bottom independently of tool disclosure',async()=>{
  const {tail}=await renderer(),root={kind:'tool-result',name:'video_tools',content:[file]};
  const snapshot={locations:{getTurn:turn=>turn===3?['a','duplicate','running','error']:[]},nodes:{get:key=>({kind:'tool-call',data:{root:key==='error'?{...root,isError:true}:key==='running'?{...root,kind:'tool-call'}:root}})}};
- const tree=tail({turn:3,useVideoChat:fn=>fn(snapshot)});assert.equal(tree.props['data-generated-videos'],true);assert.equal(find(tree,'video').length,1);assert.equal(find(tree,'video')[0].props.controls,true);assert.match(find(tree,'a')[0].props.href,/download=1/);
- assert.equal(tail({turn:4,useVideoChat:fn=>fn(snapshot)}),null);
+ const tree=tail({turn:{turn:3,status:'closed'},useVideoChat:fn=>fn(snapshot)});assert.equal(tree.props['data-generated-videos'],true);assert.equal(find(tree,'video').length,1);assert.equal(find(tree,'video')[0].props.controls,true);assert.match(find(tree,'a')[0].props.href,/download=1/);
+ assert.equal(tail({turn:{turn:4,status:'closed'},useVideoChat:fn=>fn(snapshot)}),null);
 });
 
 // No worker or GPU is used: exercise the mounted tool view with synthetic API events.

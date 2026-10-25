@@ -28,3 +28,11 @@ test('Solar registration, ephemeral guide, outputs and disable hooks work withou
  ctx.videoGeneration.render=async(args,context)=>{assert.equal(args.pipeline,'solar');assert.equal(context.callId,'solar-call');assert.equal((await step()).messages.length,0);return {attachment:{attachmentId:'fixture',name:'generated-video.mp4',bytes:10}};};
  const result=await solar.execute({action:'generate',structure_path:'guide.mp4',summary:'A scene',detailed_description:description},exec);assert.equal(solar.output.render({},result).at(-1).type,'file');
 });
+
+test('full bare content hashes resolve only to matching attachments in this conversation',async t=>{
+ const root=await mkdtemp(join(tmpdir(),'video-id-'));t.after(()=>rm(root,{recursive:true,force:true}));
+ const hash='a'.repeat(64),ref={attachmentId:'sha256:'+hash},exec={agent:{session:{snapshotEvents:()=>[{type:'user/message',data:{content:[{type:'image',attachment:ref}]}}]}}};
+ const attachments={readImage:async seen=>{assert.equal(seen,ref);return {data:Buffer.from('image bytes')};}};
+ assert.equal(await resolveVideoInput({first_frame_attachment_id:hash},'first_frame',exec,attachments,root,root),join(root,'first_frame.png'));
+ await assert.rejects(()=>resolveVideoInput({first_frame_attachment_id:'b'.repeat(64)},'first_frame',exec,attachments,root,root),/Available IDs: sha256:aaaa/);
+});

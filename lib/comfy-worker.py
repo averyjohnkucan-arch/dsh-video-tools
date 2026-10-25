@@ -9,6 +9,7 @@ sys.argv=['dsh-video-worker','--use-pytorch-cross-attention','--disable-dynamic-
 import comfy.options
 comfy.options.enable_args_parsing()
 import torch
+torch.set_num_threads(max(1, int(cfg.get('threads', 8))))
 logging.basicConfig(level=logging.INFO)
 import comfy.sd,comfy.utils,comfy.sample,comfy.samplers,comfy.model_management,folder_paths
 from comfy_extras.nodes_lt import EmptyLTXVLatentVideo,LTXVConditioning,LTXVConcatAVLatent,LTXVSeparateAVLatent,LTXVScheduler,ModelSamplingLTXV
@@ -17,7 +18,7 @@ spec=importlib.util.spec_from_file_location('dsh_gguf',root/'ComfyUI-GGUF/__init
 
 from comfy_paths import bind_checkpoint
 checkpoint_name=bind_checkpoint(folder_paths,p['modelPath'])
-start=time.monotonic();print(json.dumps({'stage':'loading'}),flush=True)
+start=time.monotonic();print(json.dumps({'stage':'loading','workerPid':os.getpid()}),flush=True)
 with torch.inference_mode():
  clip=comfy.sd.load_clip(ckpt_paths=[p['textEncoderPath']],embedding_directory=[],clip_type=comfy.sd.CLIPType.LTXV)
  positive=clip.encode_from_tokens_scheduled(clip.tokenize(r['prompt']))
@@ -57,6 +58,6 @@ with torch.inference_mode():
  with wave.open(str(output/'audio.wav'),'wb') as w:w.setnchannels(waveform.shape[-1]);w.setsampwidth(2);w.setframerate(decoded_audio['sample_rate']);w.writeframes((waveform*32767).astype('<i2').tobytes())
  pixels=(images.clamp(0,1).numpy()*255).round().astype('uint8')
  print(json.dumps({'stage':'encoding'}),flush=True)
- command=[cfg['ffmpegExecutable'],'-hide_banner','-loglevel','error','-nostdin','-f','rawvideo','-pix_fmt','rgb24','-s',f'{images.shape[2]}x{images.shape[1]}','-r',str(r['fps']),'-i','pipe:0','-i',str(output/'audio.wav'),'-c:v','libx264','-crf','18','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-movflags','+faststart','-y',job['output']]
+ command=[cfg['ffmpegExecutable'],'-hide_banner','-loglevel','error','-nostdin','-f','rawvideo','-pix_fmt','rgb24','-s',f'{images.shape[2]}x{images.shape[1]}','-r',str(r['fps']),'-i','pipe:0','-i',str(output/'audio.wav'),'-c:v','libx264','-crf','0','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-movflags','+faststart','-y',job['output']]
  subprocess.run(command,input=pixels.tobytes(),check=True)
  print(json.dumps({'seconds':time.monotonic()-start,'frames':len(images),'output':job['output'],'peakCudaMiB':torch.cuda.max_memory_allocated()/1048576}),flush=True)

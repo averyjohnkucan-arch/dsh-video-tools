@@ -1,6 +1,6 @@
 {
   "name": "dsh-video-tools",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Cordis video clips with LTX and a separate MiniMax H3 video pipeline, native playback and estimated progress.",
   "type": "module",
   "license": "MIT",
@@ -21,6 +21,8 @@
     "icon.svg",
     "cordis.patch.yml",
     "README.md",
+    "CAPABILITIES.md",
+    "QUALIFICATION.md",
     "LICENSE",
     "patches",
     "lib/*.js",

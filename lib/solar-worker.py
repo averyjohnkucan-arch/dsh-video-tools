@@ -1,4 +1,4 @@
-"""Prepared SolarRenderer structure-to-silent-video worker; hardware qualification pending.
+"""SolarRenderer structure-to-silent-video worker.
 Uses upstream SolarRenderer Comfy nodes and exact released prompt assembly.
 Only launched on an explicit render_video_solar call after H3 is configured/enabled.
 """
@@ -15,6 +15,7 @@ sys.argv = ['dsh-h3-worker', '--use-pytorch-cross-attention', '--disable-cuda-gr
 import comfy.options
 comfy.options.enable_args_parsing()
 import torch
+torch.set_num_threads(max(1, int(cfg.get('threads', 8))))
 import comfy.sd, comfy.utils, comfy.sample, comfy.samplers, comfy.model_management
 import nodes
 from comfy_extras.nodes_minimax_h3 import MiniMaxH3ImageToVideo
@@ -35,7 +36,7 @@ def load_vae(path):
     weights, metadata = comfy.utils.load_torch_file(path, safe_load=True, return_metadata=True)
     return comfy.sd.VAE(sd=weights, metadata=metadata)
 with torch.inference_mode():
-    stage('loading')
+    stage('loading', workerPid=os.getpid())
     # Paths resolve exactly; no network calls or checkpoint substitutions.
     for field in ['modelPath', 'textEncoderPath', 'videoVaePath', 'audioVaePath']:
         if Path(p[field]).suffix != '.safetensors':
@@ -87,5 +88,5 @@ with torch.inference_mode():
         w.writeframes(bytes(round(r['frames'] / 24 * 32000) * 4))
     pixels = (images.clamp(0, 1).numpy() * 255).round().astype('uint8')
     stage('encoding')
-    command = [cfg['ffmpegExecutable'], '-hide_banner', '-loglevel', 'error', '-nostdin', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{images.shape[2]}x{images.shape[1]}', '-r', '24', '-i', 'pipe:0', '-i', str(audio_path), '-c:v', 'libx264', '-crf', '18', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-y', job['output']]
+    command = [cfg['ffmpegExecutable'], '-hide_banner', '-loglevel', 'error', '-nostdin', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{images.shape[2]}x{images.shape[1]}', '-r', '24', '-i', 'pipe:0', '-i', str(audio_path), '-c:v', 'libx264', '-crf', '0', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-y', job['output']]
     subprocess.run(command, input=pixels.tobytes(), check=True)
