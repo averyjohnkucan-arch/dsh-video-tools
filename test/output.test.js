@@ -32,7 +32,7 @@ test('real media processing crops 480p, square and odd sizes and preserves synch
  const root=await mkdtemp(join(tmpdir(),'video-crop-'));t.after(()=>rm(root,{recursive:true,force:true}));
  for(const shape of ['landscape','square','odd'])for(const audio of [true,false]){
   const r=request({prompt:'scene',...(shape==='odd'?{width:853,height:479,shape:'landscape'}:{resolution:'480p',shape}),frames:9,audio},cfg),raw=join(root,`raw-${shape}-${audio}.webm`),out=join(root,`out-${shape}-${audio}.webm`);
-  await run(cfg.ffmpegExecutable,['-v','error','-f','lavfi','-i','testsrc2=s=864x480:r=24','-f','lavfi','-i','sine=frequency=440:sample_rate=24000','-frames:v','9','-t','0.375','-c:v','libvpx-vp9','-threads','1','-c:a','libopus',raw]);
+  await run(cfg.ffmpegExecutable,['-v','error','-f','lavfi','-i','testsrc2=s=864x480:r=24','-f','lavfi','-i','sine=frequency=440:sample_rate=24000','-t','0.375','-c:v','libvpx-vp9','-threads','1','-c:a','libopus',raw]);
   const info=await finishMedia(cfg,r,raw,out);assert.equal(info.streams.filter(s=>s.codec_type==='audio').length,Number(audio));
   assert.throws(()=>validateMedia(info,{...r,fps:30}),/frame-rate/);
   if(audio){const broken=structuredClone(info);broken.streams.find(s=>s.codec_type==='audio').validatedEnd=5;assert.throws(()=>validateMedia(broken,r),/timing/);}
@@ -52,7 +52,7 @@ test('entirely white inference output cannot be reported as a successful generat
 test('square crop keeps the center pixels and excludes both landscape side bands',async t=>{
  const root=await mkdtemp(join(tmpdir(),'video-center-'));t.after(()=>rm(root,{recursive:true,force:true}));
  const raw=join(root,'bands.webm'),out=join(root,'square.webm');
- await run(cfg.ffmpegExecutable,['-v','error','-f','lavfi','-i','color=blue:s=864x480:r=24,drawbox=x=0:y=0:w=192:h=480:color=red:t=fill,drawbox=x=672:y=0:w=192:h=480:color=green:t=fill','-f','lavfi','-i','sine=frequency=440:sample_rate=24000','-frames:v','9','-t','0.375','-c:v','libvpx-vp9','-lossless','1','-threads','1','-c:a','libopus',raw]);
+ await run(cfg.ffmpegExecutable,['-v','error','-f','lavfi','-i','color=blue:s=864x480:r=24,drawbox=x=0:y=0:w=192:h=480:color=red:t=fill,drawbox=x=672:y=0:w=192:h=480:color=green:t=fill','-f','lavfi','-i','sine=frequency=440:sample_rate=24000','-t','0.375','-c:v','libvpx-vp9','-lossless','1','-threads','1','-c:a','libopus',raw]);
  const r=request({prompt:'scene',resolution:'480p',shape:'square',frames:9,audio:false},cfg);await finishMedia(cfg,r,raw,out);
  const {stdout}=await run(cfg.ffmpegExecutable,['-v','error','-i',out,'-vf','signalstats,metadata=print:file=-','-an','-f','null','-']);
  const minima=[...stdout.matchAll(/lavfi.signalstats.UMIN=([0-9.]+)/g)].map(m=>Number(m[1]));
@@ -62,7 +62,7 @@ test('square crop keeps the center pixels and excludes both landscape side bands
 test('browser delivery produces H.264/AAC MP4 with exact size and audio',async t=>{
  const root=await mkdtemp(join(tmpdir(),'video-mp4-'));t.after(()=>rm(root,{recursive:true,force:true}));
  const raw=join(root,'raw.webm'),out=join(root,'result.mp4');
- await run(cfg.ffmpegExecutable,['-v','error','-f','lavfi','-i','testsrc2=s=256x256:r=24','-f','lavfi','-i','sine=frequency=440:sample_rate=24000','-frames:v','9','-t','0.375','-c:v','libvpx-vp9','-threads','1','-c:a','libopus',raw]);
+ await run(cfg.ffmpegExecutable,['-v','error','-f','lavfi','-i','testsrc2=s=256x256:r=24','-f','lavfi','-i','sine=frequency=440:sample_rate=24000','-t','0.375','-c:v','libvpx-vp9','-threads','1','-c:a','libopus',raw]);
  const r=request({prompt:'scene',width:256,height:256,frames:9,audio:true},cfg);
  const info=await finishMedia(cfg,r,raw,out);
  assert.equal(info.streams.find(s=>s.codec_type==='video').codec_name,'h264');
