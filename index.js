@@ -1,3 +1,4 @@
+import {recommendedFor} from './lib/recommended-models.mjs';
 import {solarDescription,solarGuide} from './lib/solar.js';
 import {h3Description,h3Parameters,h3PromptGuide} from './lib/h3.js';
 import Schema from '@deepseek-ai/schemastery';import {defineTool} from '@deepseek-ai/dsh-tools';import {randomBytes,timingSafeEqual} from 'node:crypto';import {VideoRuntime} from './lib/runtime.js';
@@ -21,7 +22,7 @@ export async function apply(ctx,config){
   if(supplied.length!==expected.length||!timingSafeEqual(supplied,expected)){res.writeHead(401);res.end(JSON.stringify({error:'Owner capability required.'}));return;}
   if(req.method!=='POST'||!String(req.headers['content-type']).startsWith('application/json')||req.headers.origin&&req.headers.origin!==ctx.webServer.getOrigin()){res.writeHead(403);res.end('{}');return;}
   try{let body='',size=0;for await(const chunk of req){size+=chunk.length;if(size>1048576)throw Error('Request too large.');body+=chunk;}const {action,payload={}}=JSON.parse(body);let result;
-   if(action==='progress')result=runtime.progress(payload.callId);else if(action==='list')result=runtime.list();else if(action==='configure')result=await runtime.configure(payload.settings);else if(action==='cancel'){runtime.jobs.get(payload.id)?.controller.abort();result={cancelled:true};}else throw Error('Generate video from an active conversation.');res.end(JSON.stringify({result}));
+   if(['recommended','recommendedDownload','recommendedCancel'].includes(action))result=await recommendedFor(runtime,new URL('./lib/runtime.js',import.meta.url),runtime.settings.root).action(action,payload);else if(action==='progress')result=runtime.progress(payload.callId);else if(action==='list')result=runtime.list();else if(action==='configure')result=await runtime.configure(payload.settings);else if(action==='cancel'){runtime.jobs.get(payload.id)?.controller.abort();result={cancelled:true};}else throw Error('Generate video from an active conversation.');res.end(JSON.stringify({result}));
   }catch(error){res.writeHead(400);res.end(JSON.stringify({error:error.message}));}
  }}));
  ctx.inject(['connection'],scope=>scope.effect(()=>ctx.webServer.register({kind:'exact',path:'/plugins/dsh-video-tools/video',handler:async(req,res)=>{if(!scope.connection.authorizeIndex(req,res))return;await serveVideo(ctx.attachments,req,res);}})));

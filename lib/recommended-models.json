@@ -1,0 +1,265 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "id": "standard",
+      "name": "LTX-2.5 Distilled",
+      "recommended": true,
+      "files": [
+        {
+          "sha256": "55442750eb0013d94fffaa4dadb577c5f4dc07107ec04389d41444f6e517d980",
+          "size": 14000234880,
+          "name": "ltx-2.5-22b-distilled-UD-Q4_K_XL.gguf",
+          "role": "modelPath",
+          "target": "ltx-2.5-22b-distilled-UD-Q4_K_XL.gguf",
+          "downloadable": true,
+          "evidence": "Local file SHA-256 matches the pinned publisher blob",
+          "repo": "unsloth/LTX-2.5-GGUF",
+          "revision": "ac3c540c6025903784336e99b2dc179385c4c3b7",
+          "file": "distilled/ltx-2.5-22b-distilled-UD-Q4_K_XL.gguf"
+        },
+        {
+          "name": "gemma4-12b-with-proj-ltx-2.5-bf16.safetensors",
+          "role": "textEncoderPath",
+          "target": "gemma4-12b-with-proj-ltx-2.5-bf16.safetensors",
+          "downloadable": true,
+          "evidence": "Local file SHA-256 matches the pinned publisher blob",
+          "sha256": "ef7243612fdae7a75cb4d5cee9433e81380675fb6c213bd98ae74a9cd16561d1",
+          "size": 26263858182,
+          "repo": "Lightricks/LTX-2.5",
+          "revision": "49b093a39c19169a8a81721dcc541e07e945232f",
+          "file": "text_encoders/gemma4-12b-with-proj-ltx-2.5-bf16.safetensors"
+        },
+        {
+          "name": "ltx-2.5-video-vae-conv-bf16.safetensors",
+          "role": "videoVaePath",
+          "target": "ltx-2.5-video-vae-conv-bf16.safetensors",
+          "downloadable": true,
+          "evidence": "Local file SHA-256 matches the pinned publisher blob",
+          "sha256": "685b06ee3d9b2039647698fc4ea33175112462fc374e2777312c907897dfce8d",
+          "size": 1452269922,
+          "repo": "Lightricks/LTX-2.5",
+          "revision": "49b093a39c19169a8a81721dcc541e07e945232f",
+          "file": "vae/ltx-2.5-video-vae-conv-bf16.safetensors"
+        },
+        {
+          "name": "ltx-2.5-audio-vae-bf16.safetensors",
+          "role": "audioVaePath",
+          "target": "ltx-2.5-audio-vae-bf16.safetensors",
+          "downloadable": true,
+          "evidence": "Local file SHA-256 matches the pinned publisher blob",
+          "sha256": "c52733d37f6a7fb7949c3dc0fb468c6cb2169e4d836983a73babb9f0d54837a5",
+          "size": 364866540,
+          "repo": "Lightricks/LTX-2.5",
+          "revision": "49b093a39c19169a8a81721dcc541e07e945232f",
+          "file": "vae/ltx-2.5-audio-vae-bf16.safetensors"
+        }
+      ],
+      "notes": "Configure runtime separately, then assign the downloaded component paths in Video Generation settings."
+    },
+    {
+      "id": "HQ",
+      "name": "LTX-2.5 Regular \u00b7 HQ",
+      "recommended": true,
+      "files": [
+        {
+          "sha256": "3a21f3e8172ac01096e915030139ecbbd1aacc762e232cdb0cd4346c0f7cd9ab",
+          "size": 14000234880,
+          "name": "ltx-2.5-22b-dev-UD-Q4_K_XL.gguf",
+          "role": "modelPath",
+          "target": "ltx-2.5-22b-dev-UD-Q4_K_XL.gguf",
+          "downloadable": true,
+          "evidence": "Local file SHA-256 matches the pinned publisher blob",
+          "repo": "unsloth/LTX-2.5-GGUF",
+          "revision": "ac3c540c6025903784336e99b2dc179385c4c3b7",
+          "file": "ltx-2.5-22b-dev-UD-Q4_K_XL.gguf"
+        },
+        {
+          "name": "gemma4-12b-with-proj-ltx-2.5-bf16.safetensors",
+          "role": "textEncoderPath",
+          "target": "gemma4-12b-with-proj-ltx-2.5-bf16.safetensors",
+          "downloadable": true,
+          "evidence": "Local file SHA-256 matches the pinned publisher blob",
+          "sha256": "ef7243612fdae7a75cb4d5cee9433e81380675fb6c213bd98ae74a9cd16561d1",
+          "size": 26263858182,
+          "repo": "Lightricks/LTX-2.5",
+          "revision": "49b093a39c19169a8a81721dcc541e07e945232f",
+          "file": "text_encoders/gemma4-12b-with-proj-ltx-2.5-bf16.safetensors"
+        },
+        {
+          "name": "ltx-2.5-video-vae-conv-bf16.safetensors",
+          "role": "videoVaePath",
+          "target": "ltx-2.5-video-vae-conv-bf16.safetensors",
+          "downloadable": true,
+          "evidence": "Local file SHA-256 matches the pinned publisher blob",
+          "sha256": "685b06ee3d9b2039647698fc4ea33175112462fc374e2777312c907897dfce8d",
+          "size": 1452269922,
+          "repo": "Lightricks/LTX-2.5",
+          "revision": "49b093a39c19169a8a81721dcc541e07e945232f",
+          "file": "vae/ltx-2.5-video-vae-conv-bf16.safetensors"
+        },
+        {
+          "name": "ltx-2.5-audio-vae-bf16.safetensors",
+          "role": "audioVaePath",
+          "target": "ltx-2.5-audio-vae-bf16.safetensors",
+          "downloadable": true,
+          "evidence": "Local file SHA-256 matches the pinned publisher blob",
+          "sha256": "c52733d37f6a7fb7949c3dc0fb468c6cb2169e4d836983a73babb9f0d54837a5",
+          "size": 364866540,
+          "repo": "Lightricks/LTX-2.5",
+          "revision": "49b093a39c19169a8a81721dcc541e07e945232f",
+          "file": "vae/ltx-2.5-audio-vae-bf16.safetensors"
+        }
+      ],
+      "notes": "Configure runtime separately, then assign the downloaded component paths in Video Generation settings."
+    },
+    {
+      "id": "h3",
+      "name": "MiniMax H3 FL2VA + Ref2VA",
+      "recommended": true,
+      "files": [
+        {
+          "repo": "Comfy-Org/MiniMax-H3",
+          "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+          "sha256": "e889202c41dafb67b10d67b97f0d8541508036a6090af23425a5c2615d03c47a",
+          "size": 20970379616,
+          "name": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+          "role": "modelPath",
+          "target": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors"
+        },
+        {
+          "repo": "Comfy-Org/MiniMax-H3",
+          "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+          "sha256": "9255f52b6677845ad238f20dfaafa94727053694127ab7f255c048f0f9365779",
+          "size": 20970379616,
+          "name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+          "role": "referenceModelPath",
+          "target": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors"
+        },
+        {
+          "repo": "Comfy-Org/MiniMax-H3",
+          "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+          "sha256": "bc2ced0fbea64757fa9acddccfc0b3f4819d1dcf1da6c124d690d368be283923",
+          "size": 27141342152,
+          "name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+          "role": "textEncoderPath",
+          "target": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "text_encoders/qwen3vl_32b_minimax_h3_int8_convrot.safetensors"
+        },
+        {
+          "repo": "Comfy-Org/MiniMax-H3",
+          "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+          "sha256": "7c1f131492e7eddacaac9069a61b81bdd39de5cc96561e677c5eab1cdce5e522",
+          "size": 5207808496,
+          "name": "minimax_h3_video_vae_fp16.safetensors",
+          "role": "videoVaePath",
+          "target": "minimax_h3_video_vae_fp16.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "vae/minimax_h3_video_vae_fp16.safetensors"
+        },
+        {
+          "repo": "Comfy-Org/MiniMax-H3",
+          "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+          "sha256": "8e505d95dd1561d47abd43d4238fd40d9bb1ae9e147ed0a4cba778d76ae4db48",
+          "size": 605254808,
+          "name": "minimax_h3_audio_vae_fp32.safetensors",
+          "role": "audioVaePath",
+          "target": "minimax_h3_audio_vae_fp32.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "vae/minimax_h3_audio_vae_fp32.safetensors"
+        }
+      ],
+      "notes": "Configure runtime separately, then assign the downloaded component paths in Video Generation settings."
+    },
+    {
+      "id": "solar",
+      "name": "SolarRenderer",
+      "recommended": true,
+      "files": [
+        {
+          "repo": "Comfy-Org/MiniMax-H3",
+          "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+          "sha256": "9255f52b6677845ad238f20dfaafa94727053694127ab7f255c048f0f9365779",
+          "size": 20970379616,
+          "name": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+          "role": "modelPath",
+          "target": "minimax_h3_ref2va_pruned_int8_convrot.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors"
+        },
+        {
+          "repo": "Comfy-Org/MiniMax-H3",
+          "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+          "sha256": "bc2ced0fbea64757fa9acddccfc0b3f4819d1dcf1da6c124d690d368be283923",
+          "size": 27141342152,
+          "name": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+          "role": "textEncoderPath",
+          "target": "qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "text_encoders/qwen3vl_32b_minimax_h3_int8_convrot.safetensors"
+        },
+        {
+          "repo": "Comfy-Org/MiniMax-H3",
+          "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+          "sha256": "7c1f131492e7eddacaac9069a61b81bdd39de5cc96561e677c5eab1cdce5e522",
+          "size": 5207808496,
+          "name": "minimax_h3_video_vae_fp16.safetensors",
+          "role": "videoVaePath",
+          "target": "minimax_h3_video_vae_fp16.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "vae/minimax_h3_video_vae_fp16.safetensors"
+        },
+        {
+          "repo": "Comfy-Org/MiniMax-H3",
+          "revision": "e5eb578a89295337b8ff433a035929ce0279e0b6",
+          "sha256": "8e505d95dd1561d47abd43d4238fd40d9bb1ae9e147ed0a4cba778d76ae4db48",
+          "size": 605254808,
+          "name": "minimax_h3_audio_vae_fp32.safetensors",
+          "role": "audioVaePath",
+          "target": "minimax_h3_audio_vae_fp32.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "vae/minimax_h3_audio_vae_fp32.safetensors"
+        },
+        {
+          "repo": "Enderfga/SolarRenderer",
+          "revision": "c5512be825f297ed8db390cbeda0289fb0c24779",
+          "sha256": "bbd1b3cb01f59e5ead1a195341c0ecf44a1a8e02b3b26ccccd50c5f826f7ffe4",
+          "size": 4150865632,
+          "name": "solarrenderer_control_lora.safetensors",
+          "role": "controlPath",
+          "target": "solarrenderer_control_lora.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "solarrenderer_control_lora.safetensors"
+        },
+        {
+          "repo": "Enderfga/SolarRenderer",
+          "revision": "c5512be825f297ed8db390cbeda0289fb0c24779",
+          "sha256": "26494ad0c9acafe61926e4a2203b16e3c616eabf87f0b35875bfc8f57789a4fe",
+          "size": 4150865664,
+          "name": "solarrenderer_4step_lora.safetensors",
+          "role": "fewstepPath",
+          "target": "solarrenderer_4step_lora.safetensors",
+          "downloadable": true,
+          "evidence": "Existing local download/hash receipt",
+          "file": "solarrenderer_4step_lora.safetensors"
+        }
+      ],
+      "notes": "Configure runtime separately, then assign the downloaded component paths in Video Generation settings."
+    }
+  ]
+}

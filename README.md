@@ -74,3 +74,11 @@ npm pack --dry-run
 ```
 
 The local integration suite includes real Cordis registry/disposal, owner routes, separate tool discovery, settings migration, prompt lifetime, request bounds, process cancellation, media validation, playback/range requests, progress and effective H3 controls. Scheduler integration tests require its checkout at ~/dsh-model-scheduler, or DSH_MODEL_SCHEDULER_ROOT pointing to another checkout. The path-binding test requires Python 3. Media tests find FFmpeg/FFprobe on PATH; FFMPEG_EXECUTABLE and FFPROBE_EXECUTABLE can select explicit test binaries. Real GPU tests and browser checks are recorded separately in QUALIFICATION.md; unit success alone never establishes model generation support.
+
+## Recommended models and verified downloads
+
+Open **Recommended models · exact revisions and hashes** in this plugin's settings card. The catalog records the checkpoints/components from the owner's configured setup with immutable repository revisions and SHA-256 (or Git blob hashes for small snapshot assets). Expand **Files, sizes and exact identities** before selecting a set.
+
+**Download / verify recommended** saves a complete pinned set in this plugin's private `recommended-models` directory. Downloads resume from partial files, validate content before publishing final files, preserve existing models, and expose progress, cancellation and explicit failures. Repeating the action verifies/reuses existing files. Downloads do not start inference. **Add downloaded files** fills the existing model import/edit workflow for review and saving. Runtime installation remains separate.
+
+Some configured artifacts are locally converted or assembled from multiple sources. Their exact local hashes are listed, but downloading the original publisher checkpoint cannot recreate those bytes. Use **Add existing model** and the normal importer for those entries. No incomplete component set is presented as a working download. Recommendations describe the saved setup; they do not establish memory fit or model quality on another computer.
