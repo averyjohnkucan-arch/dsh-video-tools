@@ -7,3 +7,7 @@ dsh-videos/
 settings.json
 .env
 .env.*
+
+# DSH compatibility workflow scratch data
+.compat-home/
+.compat-packed/

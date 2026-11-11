@@ -1,12 +1,12 @@
 {
   "name": "dsh-video-tools",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Cordis video clips with LTX and a separate MiniMax H3 video pipeline, native playback and estimated progress.",
   "type": "module",
   "license": "MIT",
   "engines": {
     "node": ">=22.19",
-    "dsh": "0.2.1-rc.2"
+    "dsh": ">=0.2.1-rc.2 <0.3.0-0"
   },
   "exports": {
     ".": "./index.js",
@@ -33,13 +33,14 @@
   ],
   "scripts": {
     "test": "node --test test/*.test.js",
-    "check": "node --check index.js && node --check client.js"
+    "check": "node --check index.js && node --check client.js",
+    "check:dsh": "node scripts/check-dsh-compatibility.mjs"
   },
   "peerDependencies": {
     "@deepseek-ai/cordis": "~4.0.5",
     "@deepseek-ai/schemastery": "~3.18.5",
-    "@deepseek-ai/dsh-tools": "0.2.1-rc.2",
-    "@deepseek-ai/dsh-sandbox": "0.2.1-rc.2"
+    "@deepseek-ai/dsh-tools": ">=0.2.1-rc.2 <0.3.0-0",
+    "@deepseek-ai/dsh-sandbox": ">=0.2.1-rc.2 <0.3.0-0"
   },
   "dsh": {
     "bundle": {
@@ -51,9 +52,11 @@
       "inject": [
         "@deepseek-ai/dsh-client-ui-settings",
         "@deepseek-ai/dsh-client-ui-tool",
-        "@deepseek-ai/dsh-client-ui-primitives",
         "@deepseek-ai/dsh-client-ui-conversation",
         "@deepseek-ai/dsh-client-ui-chat"
+      ],
+      "external": [
+        "@deepseek-ai/dsh-client-ui-primitives"
       ]
     }
   },
