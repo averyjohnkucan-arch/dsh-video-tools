@@ -1,5 +1,7 @@
-import {homedir} from 'node:os';
+import {existsSync} from 'node:fs';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import {join} from 'node:path';
-import {pathToFileURL} from 'node:url';
-const root=process.env.DSH_MODEL_SCHEDULER_ROOT||join(homedir(),'dsh-model-scheduler');
-export const {ModelScheduler}=await import(pathToFileURL(join(root,'lib/scheduler.js')).href);
+const sibling=fileURLToPath(new URL('../../dsh-model-scheduler/',import.meta.url));
+const root=process.env.DSH_MODEL_SCHEDULER_ROOT;
+const moduleUrl=root?pathToFileURL(join(root,'lib/scheduler.js')).href:existsSync(join(sibling,'lib/scheduler.js'))?pathToFileURL(join(sibling,'lib/scheduler.js')).href:'dsh-model-scheduler/lib/scheduler.js';
+export const {ModelScheduler}=await import(moduleUrl);
