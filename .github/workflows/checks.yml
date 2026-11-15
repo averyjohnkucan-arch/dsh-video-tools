@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: averyjohnkucan-arch/dsh-model-scheduler
-          ref: 389ca1437380b8f7642a805d6c2539085e0d976b
+          ref: a7ef9309526fffce820a8d64944de5f78fdf959f
           path: .ci/scheduler
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - run: echo "DSH_MODEL_SCHEDULER_ROOT=$GITHUB_WORKSPACE/.ci/scheduler" >> "$GITHUB_ENV"
