@@ -1,5 +1,7 @@
 # DSH Video Tools
 
+**RC4 installation trial.** Start DeepSeek Harness with `npx @deepseek-ai/dsh@0.2.2-rc.4 web` (Node.js 24.9 or newer). In **Plugins → Add plugin**, paste the full path to this RC4 trial’s `.tgz` file and enable the plugin.
+
 A Cordis plugin for DeepSeek Harness with three local video tools, native playback/download cards, cancellation, managed model handoff and live progress.
 
 | Tool | Use it for |
@@ -12,7 +14,7 @@ Read [all capabilities and settings](CAPABILITIES.md) and the [hardware qualific
 
 ## Installation and configuration
 
-Requires DSH 0.2.1-rc.2 and Node.js ≥22.19, the Model Scheduler plugin for GPU handoff, a compatible local Comfy runtime/PyTorch environment, FFmpeg/FFprobe and separately obtained model weights. Tool Manager is optional: without it enabled tools register directly; with it they are discoverable through the normal search/select flow. Historical `video_tools` results still display.
+Requires DSH 0.2.2-rc.4 and Node.js ≥24.9, the Model Scheduler plugin for GPU handoff, a compatible local Comfy runtime/PyTorch environment, FFmpeg/FFprobe and separately obtained model weights. Tool Manager is optional: without it enabled tools register directly; with it they are discoverable through the normal search/select flow. Historical `video_tools` results still display.
 
 Install the package through DSH's plugin manager or link its checkout as a profile package and include its `cordis.patch.yml` bundle. Enable **Video Generation** in Plugins, then open **Settings → Video Generation**. Configure:
 
