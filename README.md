@@ -10,6 +10,10 @@ A Cordis plugin for DeepSeek Harness with three local video tools, native playba
 
 Read [all capabilities and settings](CAPABILITIES.md) and the [hardware qualification report](QUALIFICATION.md). Supported schema values are not a guarantee that every combination fits a particular GPU.
 
+## Find existing video models
+
+Open **Settings → Video Generation → Find local video models**, choose a folder and select **Scan folder and subfolders**. Each model set lists any missing or ambiguous files. Use a complete set to fill its existing settings, then check the runtime paths and save. The scan matches catalogued filenames and byte sizes. Custom checkpoints can still be entered manually.
+
 ## Installation and configuration
 
 GitHub installation was verified on DSH 0.2.2-rc.4 with Node.js 24.9 or newer. GPU generation needs a compatible local Comfy runtime/PyTorch environment, FFmpeg/FFprobe and model weights. Use the Model Scheduler plugin for GPU handoff. Tool Manager is optional and can make the tools available through search and selection. Historical `video_tools` results still display.
