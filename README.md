@@ -12,9 +12,9 @@ Read [all capabilities and settings](CAPABILITIES.md) and the [hardware qualific
 
 ## Installation and configuration
 
-Requires DSH 0.2.1-rc.2 and Node.js ≥22.19, the Model Scheduler plugin for GPU handoff, a compatible local Comfy runtime/PyTorch environment, FFmpeg/FFprobe and separately obtained model weights. Tool Manager is optional: without it enabled tools register directly; with it they are discoverable through the normal search/select flow. Historical `video_tools` results still display.
+GitHub installation was verified on DSH 0.2.2-rc.4 with Node.js 24.9 or newer. GPU generation needs a compatible local Comfy runtime/PyTorch environment, FFmpeg/FFprobe and model weights. Use the Model Scheduler plugin for GPU handoff. Tool Manager is optional and can make the tools available through search and selection. Historical `video_tools` results still display.
 
-Install the package through DSH's plugin manager or link its checkout as a profile package and include its `cordis.patch.yml` bundle. Enable **Video Generation** in Plugins, then open **Settings → Video Generation**. Configure:
+In **Plugins → Add plugin**, paste `https://github.com/averyjohnkucan-arch/dsh-video-tools`. Enable **Video Generation**, then open **Settings → Video Generation** and configure these settings.
 
 1. Python executable and Comfy source checkout, FFmpeg and FFprobe.
 2. LTX Distilled and separate Dev/HQ checkpoints with their shared text encoder/video VAE/audio VAE. The CUDA LTX worker additionally uses ComfyUI-GGUF and its `gguf` Python dependency beside the runtime source.
