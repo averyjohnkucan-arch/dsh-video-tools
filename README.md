@@ -20,7 +20,7 @@ GitHub installation was verified on DSH 0.2.2-rc.4 with Node.js 24.9 or newer. G
 
 In **Plugins → Add plugin**, paste `https://github.com/averyjohnkucan-arch/dsh-video-tools`. Enable **Video Generation**, then open **Settings → Video Generation** and configure these settings.
 
-1. Python executable and Comfy source checkout, FFmpeg and FFprobe.
+1. In **Runtime and output defaults**, choose **Install portable LTX runtime** or **Install Comfy CUDA runtime**. The installer prepares pinned engines and sets the bundled FFmpeg and FFprobe paths. You can also enter existing runtime paths.
 2. LTX Distilled and separate Dev/HQ checkpoints with their shared text encoder/video VAE/audio VAE. The CUDA LTX worker additionally uses ComfyUI-GGUF and its `gguf` Python dependency beside the runtime source.
 3. H3 FL2VA and Ref2VA checkpoints, shared MiniMax Qwen3-VL encoder and video/audio VAEs. Configure default dimensions, sampling budget, sampler/schedule, shifts, compression and memory policy. H3 starts disabled on a new installation.
 4. Optional SolarRenderer source checkout and both non-causal LoRAs, reusing H3 Ref2VA/encoder/VAEs. Solar starts disabled on a new installation.

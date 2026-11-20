@@ -1,6 +1,6 @@
 {
   "name": "dsh-video-tools",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Cordis video clips with LTX and a separate MiniMax H3 video pipeline, native playback and estimated progress.",
   "type": "module",
   "license": "MIT",
@@ -66,6 +66,10 @@
   "homepage": "https://github.com/averyjohnkucan-arch/dsh-video-tools#readme",
   "bugs": {
     "url": "https://github.com/averyjohnkucan-arch/dsh-video-tools/issues"
+  },
+  "dependencies": {
+    "@ffprobe-installer/ffprobe": "2.1.2",
+    "ffmpeg-static": "5.3.0"
   },
   "devDependencies": {
     "@deepseek-ai/dsh-tools": "0.2.2-rc.1",
