@@ -37,9 +37,9 @@ else:
     checkout(source,'https://github.com/Comfy-Org/ComfyUI.git',COMFY)
     checkout(source/'ComfyUI-GGUF','https://github.com/city96/ComfyUI-GGUF.git',GGUF)
     checkout(solar,'https://github.com/Enderfga/SolarRenderer.git',SOLAR)
-    run([uv,'pip','install','--python',python,'--index-url','https://download.pytorch.org/whl/cu130','torch==2.14.0','torchvision==0.29.0','torchaudio==2.14.0'])
+    run([uv,'pip','install','--python',python,'--index-url','https://download.pytorch.org/whl/cu130','torch==2.14.0','torchvision==0.29.0'])
     run([uv,'pip','install','--python',python,'-r',source/'requirements.txt','-r',source/'ComfyUI-GGUF/requirements.txt'])
-    run([python,'-c','import torch,gguf,PIL; print("Comfy video dependencies verified")'])
+    run([python,'-c','import av, gguf, PIL, torch, torchvision\nprint("Comfy video dependencies verified")'],source)
 if PORTABLE_ONLY:
     # Official pinned sd-cli release for Qwen Turbo GGUF. Validate before extraction.
     sdroot=ROOT/'sdcpp-0518b34'
