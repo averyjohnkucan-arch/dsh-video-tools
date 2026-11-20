@@ -33,12 +33,13 @@ else:
         run(['git','checkout','--detach','FETCH_HEAD'],path)
 
     source=ROOT/'comfyui'
+    gguf=ROOT/'ComfyUI-GGUF'
     solar=ROOT/'solarrenderer'
     checkout(source,'https://github.com/Comfy-Org/ComfyUI.git',COMFY)
-    checkout(source/'ComfyUI-GGUF','https://github.com/city96/ComfyUI-GGUF.git',GGUF)
+    checkout(gguf,'https://github.com/city96/ComfyUI-GGUF.git',GGUF)
     checkout(solar,'https://github.com/Enderfga/SolarRenderer.git',SOLAR)
     run([uv,'pip','install','--python',python,'--index-url','https://download.pytorch.org/whl/cu130','torch==2.14.0','torchvision==0.29.0'])
-    run([uv,'pip','install','--python',python,'-r',source/'requirements.txt','-r',source/'ComfyUI-GGUF/requirements.txt'])
+    run([uv,'pip','install','--python',python,'-r',source/'requirements.txt','-r',gguf/'requirements.txt'])
     run([python,'-c','import av, gguf, PIL, torch, torchvision\nprint("Comfy video dependencies verified")'],source)
 if PORTABLE_ONLY:
     # Official pinned sd-cli release for Qwen Turbo GGUF. Validate before extraction.
@@ -64,7 +65,7 @@ if PORTABLE_ONLY:
 
     receipt={'backend':'sdcpp','sdExecutable':str(sdcli)}
 else:
-    if not (source/'comfy_extras/nodes_minimax_h3.py').is_file() or not (solar/'comfyui/nodes.py').is_file():
+    if not (source/'comfy_extras/nodes_minimax_h3.py').is_file() or not (gguf/'__init__.py').is_file() or not (solar/'comfyui/nodes.py').is_file():
         raise RuntimeError('Pinned source files are incomplete.')
     receipt={'backend':'comfy','comfyPython':str(python),'comfySource':str(source),'solarSource':str(solar)}
 temporary=ROOT/'receipt.partial.json'
